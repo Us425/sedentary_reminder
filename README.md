@@ -1,35 +1,77 @@
-# sedentary_reminder
+# StayActive Reminder
 
-A Windows application to remind users to take breaks and optionally lock their screen. Features include configurable timer intervals, snooze functionality, and a system tray icon for managing the application.
+StayActive Reminder is a Windows application designed to help users maintain a healthier work routine by reminding them to take regular breaks. It does this by automatically locking the screen after a configurable interval, offering snooze options for flexibility.
 
 ## Features
 
-*   Configurable screen lock timer.
-*   Snooze functionality with configurable snooze duration and number of snoozes.
-*   Settings are saved locally in `settings.json`.
-*   System tray icon for:
-    *   Showing settings window.
-    *   Pausing/Resuming the timer.
-    *   Exiting the application.
-*   Timer automatically resets upon screen unlock after a lock event.
-*   (Optional) Windows session event listener for screen lock/unlock detection using `pywin32`.
-*   (Optional) System tray functionality using `pystray` and `Pillow`.
+*   **Automatic Screen Lock**: Locks the screen automatically after a user-defined interval.
+*   **Snooze Functionality**: Allows users to temporarily postpone the screen lock.
+    *   Customizable number of snoozes.
+    *   Configurable snooze duration.
+*   **Settings GUI**: User-friendly interface to configure:
+    *   Screen lock interval.
+    *   Snooze enablement and parameters.
+*   **Persistent Settings**: All configurations are saved locally in a `settings.json` file.
+*   **Automatic Timer Reset**: The main timer automatically resets when the user unlocks their screen after a lock event triggered by the application.
+*   **System Tray Icon**: Provides convenient access to:
+    *   Open the settings window.
+    *   Pause or resume the main timer.
+    *   Exit the application.
+*   **Windows Session Aware**: Uses Windows events to detect screen lock/unlock for robust timer management (requires `pywin32`).
 
-## Running from Source
+## Requirements
 
-1.  Ensure Python 3 is installed.
-2.  Clone the repository.
-3.  Install dependencies:
-    The application attempts to handle optional dependencies gracefully. For full functionality:
+*   **Operating System**: Windows
+*   **Python**: Python 3.x (developed with 3.9)
+*   **Libraries**:
+    *   `Pillow` (for image manipulation, used by `pystray`)
+    *   `pystray` (for creating and managing the system tray icon)
+    *   `pywin32` (for Windows-specific features like screen lock detection and locking the workstation)
+    *   (Note: `tkinter` is also used, which is part of the Python standard library.)
+
+    These dependencies will be listed in a `requirements.txt` file.
+
+## How to Run from Source
+
+1.  **Clone the Repository**:
     ```bash
-    pip install pywin32 pystray Pillow
+    git clone <repository_url> 
+    cd <repository_directory_name> 
     ```
-    (If a `requirements.txt` file were present, you could use `pip install -r requirements.txt`.)
+    (Replace `<repository_url>` and `<repository_directory_name>` accordingly.)
 
-4.  Run the application:
+2.  **Create and Activate Virtual Environment** (Recommended):
+    ```bash
+    python -m venv venv
+    .\venv\Scripts\activate 
+    ```
+    (On Windows. For other OS, activation command might differ, e.g., `source venv/bin/activate`)
+
+3.  **Install Dependencies**:
+    A `requirements.txt` file should be created containing the necessary libraries. Once available, install using:
+    ```bash
+    pip install -r requirements.txt
+    ```
+    If `requirements.txt` is not yet available, you can install the main dependencies manually:
+    ```bash
+    pip install Pillow pystray pywin32
+    ```
+
+4.  **Run the Application**:
     ```bash
     python app.py
     ```
+
+## Settings Explanation
+
+The application's behavior can be customized through the Settings window, accessible via the system tray icon.
+
+*   **Screen Lock Interval (minutes)**: Sets how long the application waits (after the timer starts or resets) before initiating a screen lock.
+*   **Enable Snooze Feature**: A checkbox to turn the snooze functionality on or off. If unchecked, the screen will lock directly when the main timer expires, without offering a snooze option.
+*   **Number of Snoozes Allowed**: If snooze is enabled, this determines how many times the user can snooze the screen lock within a single main timer cycle.
+*   **Snooze Duration (minutes)**: If snooze is enabled, this sets the length of each snooze period. After a snooze, the screen will lock unless snoozed again (if allowed).
+
+All settings are saved to `settings.json` in the application's directory when you click "Save Settings".
 
 ## Packaging for Windows (using PyInstaller)
 
@@ -105,4 +147,8 @@ The exact hidden imports required can vary based on library versions and your en
 *   A `dist` folder: Contains the final packaged application (e.g., `StayActiveReminder.exe` if using `--onefile`). This is the folder/file you would distribute.
 
 After running the command, find your executable in the `dist` directory. Test it thoroughly, including all functionalities like opening settings, pausing/resuming, and ensuring the timer and screen lock/unlock detection work as expected.
+
+## Contributing
+
+Contributions are welcome! If you have suggestions for improvements or encounter any issues, please feel free to open an issue or submit a pull request on the project's repository.
 ```

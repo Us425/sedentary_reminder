@@ -1,0 +1,54 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [ main ] # Assuming 'main' is the default branch
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4 # Using a newer version
+
+    - name: Set up Python
+      uses: actions/setup-python@v4 # Using a newer version
+      with:
+        python-version: '3.9' # Specify Python version
+
+    - name: Install pip (should be included with Python setup)
+      run: |
+        python -m ensurepip --upgrade
+        python -m pip install --upgrade pip
+
+    - name: Install dependencies
+      run: |
+        pip install Pillow pystray
+        # pywin32 is Windows-specific and will fail here, but that's expected on Ubuntu.
+        # If this was a cross-platform build matrix, we'd use conditions.
+        # For now, let it attempt and fail or be skipped by pip if no matching distribution.
+        pip install pywin32 || echo "pywin32 installation skipped/failed on non-Windows OS (expected)."
+
+    - name: Lint with flake8
+      run: |
+        pip install flake8
+        # Run flake8 but don't fail the build on errors for now (--exit-zero)
+        # E9 - syntax error or indentation error
+        # F63 - local variable name used in global scope
+        # F7 - undefined name
+        # F82 - undefined name in __all__
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exit-zero
+
+    - name: Run Tests (Placeholder)
+      run: |
+        python -m unittest discover -v
+        # This command will likely find no tests initially, which is fine.
+        # It will exit with a non-zero status if it tries to run and finds no tests,
+        # depending on the unittest version/configuration.
+        # To prevent failure if no tests are found:
+        # python -m unittest discover -v || echo "No tests found or test discovery failed (placeholder)."
+        # For now, let's keep it simple. If it fails due to no tests, we'll adjust.
+```
